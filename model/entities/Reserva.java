@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DominioDeExcecao;
+
 public class Reserva {
 	private Integer numeroDoQuarto;
 	private Date dataDeCheckin;
@@ -14,10 +16,15 @@ public class Reserva {
 		
 	}
 
-	public Reserva(Integer numeroDoQuarto, Date dataDeCheckin, Date dataDeCheckout) {
-		this.numeroDoQuarto = numeroDoQuarto;
-		this.dataDeCheckin = dataDeCheckin;
-		this.dataDeCheckout = dataDeCheckout;
+	public Reserva(Integer numeroDoQuarto, Date dataDeCheckin, Date dataDeCheckout) throws DominioDeExcecao{
+		if(!dataDeCheckout.after(dataDeCheckin)) {
+			throw new DominioDeExcecao("Erro na reserva: data de checkout deve ser maior que a data de checkin!");
+		}
+		else {
+			this.numeroDoQuarto = numeroDoQuarto;
+			this.dataDeCheckin = dataDeCheckin;
+			this.dataDeCheckout = dataDeCheckout;
+		}
 	}
 
 	public Integer getNumeroDoQuarto() {
@@ -41,19 +48,18 @@ public class Reserva {
 		return TimeUnit.DAYS.convert(duracao,TimeUnit.MILLISECONDS);
 	}
 	
-	public String atualizaDatas(Date checkin, Date checkout) {
+	public void atualizaDatas(Date checkin, Date checkout) throws DominioDeExcecao{
 		Date diaAtual = new Date();
 		if(diaAtual.after(checkin)||diaAtual.after(checkout)) {
-			return "Datas para reserva devem ser maior que as anteriores";
+			throw new DominioDeExcecao("Datas para reserva devem ser maior que as anteriores");
 		}
 		else {
 			if(!checkout.after(checkin)) {
-				return "Erro na reserva: data de checkout deve ser maior que a data de checkin!";
+				throw new DominioDeExcecao("Erro na reserva: data de checkout deve ser maior que a data de checkin!");
 			}
 			else {
 				this.dataDeCheckin = checkin;
 				this.dataDeCheckout = checkout;
-				return null;
 			}
 		}
 	}

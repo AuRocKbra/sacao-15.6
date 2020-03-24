@@ -6,24 +6,22 @@ import java.util.Date;
 import java.util.Scanner;
 
 import model.entities.Reserva;
+import model.exceptions.DominioDeExcecao;
 
 public class Programa {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args){
 		// TODO Auto-generated method stub
 		Scanner sc = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		System.out.print("Numero do quanto:");
-		Integer numeroDoQuarto = sc.nextInt();
-		sc.nextLine();
-		System.out.print("Data de checkin (DD/MM/YYYY):");
-		Date checkin = sdf.parse(sc.nextLine());
-		System.out.print("Data de checkout (DD/MM/YYYY):");
-		Date checkout = sdf.parse(sc.nextLine());
-		if(!checkout.after(checkin)) {
-			System.out.println("Erro na reserva: data de checkout deve ser maior que a data de checkin!");
-		}
-		else {
+		try {
+			System.out.print("Numero do quanto:");
+			Integer numeroDoQuarto = sc.nextInt();
+			sc.nextLine();
+			System.out.print("Data de checkin (DD/MM/YYYY):");
+			Date checkin = sdf.parse(sc.nextLine());
+			System.out.print("Data de checkout (DD/MM/YYYY):");
+			Date checkout = sdf.parse(sc.nextLine());
 			Reserva reserva = new Reserva(numeroDoQuarto, checkin, checkout);
 			System.out.println(reserva.toString());
 			System.out.println();
@@ -32,15 +30,18 @@ public class Programa {
 			checkin = sdf.parse(sc.nextLine());
 			System.out.print("Data de checkout (DD/MM/YYYY):");
 			checkout = sdf.parse(sc.nextLine());
-			String resposta = reserva.atualizaDatas(checkin, checkout);
-			if(resposta!=null) {
-				System.out.println(resposta);
-			}
-			else {
-				System.out.println(reserva);
-			}
+			reserva.atualizaDatas(checkin, checkout);
+			System.out.println(reserva);
+		}catch (ParseException e) {
+			System.out.println("Formato de data inválida!");
+		}catch (DominioDeExcecao e) {
+			System.out.println(e.getMessage());
+		}catch (RuntimeException e) {
+			System.out.println("Erro inesperado!");
 		}
-		sc.close();
+		finally {
+			sc.close();
+		}
 	}
 
 }
