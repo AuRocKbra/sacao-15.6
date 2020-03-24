@@ -41,9 +41,21 @@ public class Reserva {
 		return TimeUnit.DAYS.convert(duracao,TimeUnit.MILLISECONDS);
 	}
 	
-	public void atualizaDatas(Date checkin, Date checkout) {
-		this.dataDeCheckin = checkin;
-		this.dataDeCheckout = checkout;
+	public String atualizaDatas(Date checkin, Date checkout) {
+		Date diaAtual = new Date();
+		if(diaAtual.after(checkin)||diaAtual.after(checkout)) {
+			return "Datas para reserva devem ser maior que as anteriores";
+		}
+		else {
+			if(!checkout.after(checkin)) {
+				return "Erro na reserva: data de checkout deve ser maior que a data de checkin!";
+			}
+			else {
+				this.dataDeCheckin = checkin;
+				this.dataDeCheckout = checkout;
+				return null;
+			}
+		}
 	}
 	
 	@Override
